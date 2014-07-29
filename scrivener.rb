@@ -119,8 +119,8 @@ module Scrivener
       short = short.gsub(".", "")
       return true if message =~ /#{short}.*:/ && !message.index("@" + short)
 
-      # also try without accents, like 'Timothée Peignier'
-      short = I18n.transliterate(short)
+      # also try without accents or symbols, like 'Timothée Peignier'
+      short = I18n.transliterate(short).gsub(/[^A-Za-z0-9]/, '')
       return true if message =~ /#{short}.*:/ && !message.index("@" + short)
 
       return false
