@@ -1,4 +1,5 @@
 require "excon"
+require "i18n"
 require "multi_json"
 require "oj"
 require "thread"
@@ -116,6 +117,10 @@ module Scrivener
 
       # also try without dots, like 'Ricardo Chimal Jr."
       short = short.gsub(".", "")
+      return true if message =~ /#{short}.*:/ && !message.index("@" + short)
+
+      # also try without accents, like 'Timothée Peignier'
+      short = I18n.transliterate(short)
       return true if message =~ /#{short}.*:/ && !message.index("@" + short)
 
       return false
