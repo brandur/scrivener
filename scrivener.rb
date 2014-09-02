@@ -49,8 +49,10 @@ module Scrivener
       }
       user_lookup = {}
       users["users"].each do |user|
-        user_lookup[user["name"]] = user["mention_name"]
-        log "cached full=#{user["name"]} mention=#{user["mention_name"]}"
+        if user["name"] != user["mention_name"]
+          user_lookup[user["name"]] = user["mention_name"]
+          log "cached full=#{user["name"]} mention=#{user["mention_name"]}"
+        end
       end
       @user_lookup = user_lookup
     end
