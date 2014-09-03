@@ -144,6 +144,9 @@ module Scrivener
         # don't alert users when they mention themselves
         next if full == nick
 
+        # if the message already contains the mention, there's nothing to do
+        next if message.include?(mention)
+
         mentions << mention if message_mentions(message, full)
       end
       if mentions.size > 0
