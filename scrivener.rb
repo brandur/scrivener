@@ -110,14 +110,14 @@ module Scrivener
     def message_mentions(message, full)
       # make sure there's a colon to the right of the name so that we don't
       # unintentionally catch off-hand mentions
-      return true if message =~ /#{full}.*:/
+      return true if message =~ /\b#{full}\b.*:/
 
       short = full.gsub(" ", "")
-      return true if message =~ /#{short}.*:/ && !message.index("@" + short)
+      return true if message =~ /\b#{short}\b.*:/ && !message.index("@" + short)
 
       # also try without dots, like 'Ricardo Chimal Jr."
       short = short.gsub(".", "")
-      return true if message =~ /#{short}.*:/ && !message.index("@" + short)
+      return true if message =~ /\b#{short}\b.*:/ && !message.index("@" + short)
 
       # Also try without accents or symbols, like 'Timothée'
       #
@@ -125,7 +125,7 @@ module Scrivener
       # consisted mostly of symbols which were then stripped and now contain
       # very little entropy are not matched.
       short = I18n.transliterate(short).gsub(/[^A-Za-z0-9]/, '')
-      return true if short.length > 5 && message =~ /#{short}.*:/ &&
+      return true if short.length > 5 && message =~ /\b#{short}\b.*:/ &&
         !message.index("@" + short)
 
       return false
