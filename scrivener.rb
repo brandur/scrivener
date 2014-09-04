@@ -108,16 +108,23 @@ module Scrivener
     end
 
     def message_mentions(message, full)
+      # Some notes on matching:
+      #   1. Generally we try to match all names within a word boundary (\b) to
+      #      avoid false positives.
+      #   2. The underscores trailing search strings but preceding \b are there
+      #      to support certain clients like Bitlbee which will disambiguate a
+      #      duplicate nick with more underscores.
+
       # make sure there's a colon to the right of the name so that we don't
       # unintentionally catch off-hand mentions
-      return true if message =~ /\b#{full}\b.*:/
+      return true if message =~ /\b#{full}_*\b.*:/
 
       short = full.gsub(" ", "")
-      return true if message =~ /\b#{short}\b.*:/ && !message.index("@" + short)
+      return true if message =~ /\b#{short}_*\b.*:/ && !message.index("@" + short)
 
       # also try without dots, like 'Ricardo Chimal Jr."
       short = short.gsub(".", "")
-      return true if message =~ /\b#{short}\b.*:/ && !message.index("@" + short)
+      return true if message =~ /\b#{short}_*\b.*:/ && !message.index("@" + short)
 
       # Also try without accents or symbols, like 'Timothée'
       #
@@ -125,7 +132,7 @@ module Scrivener
       # consisted mostly of symbols which were then stripped and now contain
       # very little entropy are not matched.
       short = I18n.transliterate(short).gsub(/[^A-Za-z0-9]/, '')
-      return true if short.length > 5 && message =~ /\b#{short}\b.*:/ &&
+      return true if short.length > 5 && message =~ /\b#{short}_*\b.*:/ &&
         !message.index("@" + short)
 
       return false
