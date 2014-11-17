@@ -26,7 +26,7 @@ module Scrivener
       abort("missing=XMPP_ID") unless ENV["XMPP_ID"]
       abort("missing=XMPP_PASSWORD") unless ENV["XMPP_PASSWORD"]
 
-      @api = Excon.new("https://api.hipchat.com")
+      @api = Excon.new(ENV["HIPCHAT_API_URL"] || "https://api.hipchat.com")
 
       cache_users
       init_xmpp
@@ -85,7 +85,7 @@ module Scrivener
     def init_xmpp
       log "init_xmpp"
       @xmpp_client = Jabber::Client.new(ENV["XMPP_ID"])
-      @xmpp_client.connect
+      @xmpp_client.connect(ENV["XMPP_HOST"])
       @xmpp_client.auth(ENV["XMPP_PASSWORD"])
       @xmpp_client.send(Jabber::Presence.new.set_type(:available))
 

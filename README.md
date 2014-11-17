@@ -15,11 +15,16 @@ Scrivener requires a HipChat account to make an XMPP connection and an API `auth
 ## Configuration
 
 * `AUTH_TOKEN`: API key for looking up rooms and users. Must have **admin** privileges.
-* `IGNORE_USERS`: Nicks to ignore, i.e. whose messages are not searched for mentions.
 * `NICK`: Nick to be assigned to the Scrivener bot.
-* `ROOMS`: Only join particular rooms on the account. Use human room names like "API,Web Apps".
 * `XMPP_ID`: Jabber ID, e.g. `27879_289875@chat.hipchat.com/bot`. Make sure to append `/bot` on the end so that HipChat won't replay your old messages.
 * `XMPP_PASSWORD`: Password of bot's HipChat account.
+
+### Optional
+
+* `HIPCHAT_API_URL`: If using a non-default HipChat installation, URL for its API.
+* `IGNORE_USERS`: Nicks to ignore, i.e. whose messages are not searched for mentions.
+* `ROOMS`: Only join particular rooms on the account. Use human room names like "API,Web Apps".
+* `XMPP_HOST`: If using a non-default HipChat installtion, host for XMPP connection.
 
 ## Run Locally
 
