@@ -97,7 +97,7 @@ module Scrivener
         log "join_room name=#{name} xmpp_jid=#{xmpp_jid}"
         xmpp_muc = Jabber::MUC::SimpleMUCClient.new(@xmpp_client)
         xmpp_muc.on_message do |time, nick, text|
-          handle_message(xmpp_muc, time, nick, text)
+          handle_message(xmpp_muc, nick, text)
         end
         xmpp_muc.join("#{xmpp_jid}/#{ENV["NICK"]}")
       end
@@ -138,12 +138,9 @@ module Scrivener
       return false
     end
 
-    def handle_message(xmpp_muc, time, nick, message)
+    def handle_message(xmpp_muc, nick, message)
       # don't process if from an ignored user
       return if @ignore_users.include?(nick)
-
-      # don't process a message that is obviously stale
-      return unless time > Time.now - 60
 
       # don't process if not from a "known" user, we want to disclude announce
       # bots etc.
