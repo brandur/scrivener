@@ -89,8 +89,6 @@ module Scrivener
       @xmpp_client.auth(ENV["XMPP_PASSWORD"])
       @xmpp_client.send(Jabber::Presence.new.set_type(:available))
 
-      @connected_at = Time.now
-
       get_rooms.each do |name, xmpp_jid|
         # if the ROOMS option has been specified, restrict joins to those rooms
         # only
@@ -99,7 +97,7 @@ module Scrivener
         log "join_room name=#{name} xmpp_jid=#{xmpp_jid}"
         xmpp_muc = Jabber::MUC::SimpleMUCClient.new(@xmpp_client)
         xmpp_muc.on_message do |time, nick, text|
-          handle_message(xmpp_muc, nick, text)
+          handle_message(xmpp_muc, time, nick, text)
         end
         xmpp_muc.join("#{xmpp_jid}/#{ENV["NICK"]}")
       end
@@ -140,15 +138,13 @@ module Scrivener
       return false
     end
 
-    def handle_message(xmpp_muc, nick, message)
+    def handle_message(xmpp_muc, time, nick, message)
       # don't process if from an ignored user
       return if @ignore_users.include?(nick)
 
-      # As an insane hack, ignore any messages that are sent out within a
-      # few seconds of connecting. Unfortunately, HipChat dumps us a
-      # backlog without timestamps that puts us at risk of
-      # double-notifying.
-      return if Time.now - @connected_at < 10
+      # Don't process a message that is obviously stale. Processes that
+      # come in via the connect backlog seem to have a time set to `nil`.
+      return if !time || time < Time.now - 60
 
       # don't process if not from a "known" user, we want to disclude announce
       # bots etc.
