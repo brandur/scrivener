@@ -142,9 +142,8 @@ module Scrivener
       # don't process if from an ignored user
       return if @ignore_users.include?(nick)
 
-      # Don't process a message that is obviously stale. Processes that
-      # come in via the connect backlog seem to have a time set to `nil`.
-      return if !time || time < Time.now - 60
+      # don't process a message that is obviously stale
+      return unless time > Time.now - 60
 
       # don't process if not from a "known" user, we want to disclude announce
       # bots etc.
